@@ -8,7 +8,6 @@ namespace ConsoleApp1
         {
             public async Task WriteToFileAsync(string message)
             {
-                Console.WriteLine("Writing to file in background...");
                 await Task.Delay(3000);
                 await File.WriteAllTextAsync("tmp.txt", message);
             }
@@ -19,7 +18,10 @@ namespace ConsoleApp1
             string message = GetMessageToWrite(input); // Pass input and get respective message string
            
             BackgroundOperation bgOps = new BackgroundOperation();
-            bgOps.WriteToFileAsync(message); // Pass message to be written on file
+            Task.Run(async () => {
+                Console.WriteLine("Writing to file in background...");
+                await bgOps.WriteToFileAsync(message);
+            }); // Pass message to be written on file
 
             Console.WriteLine("Enter something till file writes"); // To showcase non blocking UI, user can still access console
             string? userInput = Console.ReadLine();
